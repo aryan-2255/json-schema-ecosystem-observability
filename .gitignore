@@ -4,6 +4,9 @@ node_modules/
 # Build output
 dist/
 
+# Generated deployment folder (built by scripts/prepare-deploy.js)
+public/
+
 # Environment variables — never commit real tokens
 .env
 .env.local
