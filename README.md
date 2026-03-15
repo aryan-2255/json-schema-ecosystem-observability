@@ -33,7 +33,8 @@ json-schema-observability/
 │   └── chart.html         # Chart.js dashboard that reads output/metrics.json
 │
 ├── README.md
-├── analysis.md
+├── analysis.md            # Interpretation of the collected metrics
+├── evaluation.md          # Code review of the upstream json-schema-org/community repo
 ├── tsconfig.json
 └── package.json
 ```
