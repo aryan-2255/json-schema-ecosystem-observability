@@ -10,7 +10,12 @@
     "test": "ts-node tests/metrics.test.ts",
     "prepare-deploy": "node scripts/prepare-deploy.js"
   },
-  "keywords": ["json-schema", "observability", "metrics", "gsoc"],
+  "keywords": [
+    "json-schema",
+    "observability",
+    "metrics",
+    "gsoc"
+  ],
   "author": "Aryan Choudhary",
   "license": "MIT",
   "dependencies": {

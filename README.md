@@ -26,22 +26,14 @@ json-schema-observability/
 │   ├── githubMetric.ts    # Fetches repo count with topic "json-schema" from GitHub API
 │   └── index.ts           # Entry point — orchestrates collection, combines, writes output
 │
-├── tests/
-│   └── metrics.test.ts    # Integration tests for both metric fetchers
-│
-├── scripts/
-│   └── prepare-deploy.js  # Generates public/ for Vercel deployment
-│
 ├── output/
 │   └── metrics.json       # Generated output file (created/overwritten on every run)
 │
 ├── visualization/
-│   └── chart.html         # Dashboard that reads output/metrics.json
+│   └── chart.html         # Chart.js dashboard that reads output/metrics.json
 │
 ├── README.md
 ├── analysis.md
-├── evaluation.md
-├── vercel.json            # Vercel deployment configuration
 ├── tsconfig.json
 └── package.json
 ```
@@ -72,36 +64,6 @@ python3 -m http.server 8080
 Then open: [http://localhost:8080/visualization/chart.html](http://localhost:8080/visualization/chart.html)
 
 > The chart uses `fetch()` to load `output/metrics.json`. Opening `chart.html` directly from the filesystem (`file://`) will be blocked by browser CORS policy — a local server sidesteps this.
-
----
-
-## Testing
-
-The project includes integration tests for both metric fetchers:
-
-```bash
-npm test
-```
-
-This runs four tests:
-- Verifies `ajv` downloads return a positive number > 1M
-- Verifies invalid npm packages throw descriptive errors
-- Verifies `json-schema` topic returns > 1K repos
-- Verifies unknown topics correctly return 0
-
----
-
-## Deployment (Vercel)
-
-The visualization can be deployed to Vercel as a static site.
-
-**From the Vercel dashboard:**
-
-1. Import this repository at [vercel.com/new](https://vercel.com/new)
-2. Vercel reads `vercel.json` and runs `scripts/prepare-deploy.js` automatically
-3. The dashboard is deployed — no build configuration needed
-
-**How it works:** The deploy script copies `visualization/chart.html` into a `public/` directory (adjusting the data fetch path) and bundles the latest `output/metrics.json` alongside it. The `public/` directory is not committed to git — it is generated at deploy time.
 
 ---
 
