@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "start": "ts-node src/index.ts",
-    "dev": "ts-node src/index.ts"
+    "dev": "ts-node src/index.ts",
+    "test": "ts-node tests/metrics.test.ts"
   },
   "keywords": ["json-schema", "observability", "metrics", "gsoc"],
   "author": "Aryan Choudhary",
