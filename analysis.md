@@ -6,6 +6,7 @@
 
 1. **npm weekly downloads for `ajv`** — fetched from `api.npmjs.org/downloads/point/last-week/ajv`
 2. **Count of GitHub repositories with the `json-schema` topic** — fetched from `api.github.com/search/repositories?q=topic:json-schema`
+3. **PyPI weekly downloads for `jsonschema`** — fetched from `pypistats.org/api/packages/jsonschema/recent`
 
 ---
 
@@ -125,9 +126,9 @@ A repository must have a human explicitly add the `json-schema` topic. Many proj
 
 A validator can claim to support JSON Schema draft 2020-12 and implement it incorrectly. A repository tagged `json-schema` might use a draft that was superseded five years ago. These metrics count presence in the ecosystem, not quality or standards conformance. They say nothing about which draft versions are actually in use, which is arguably the most important signal for the specification itself.
 
-**npm data is JavaScript/Node.js-centric**
+**Registry data is still limited to two ecosystems**
 
-The Python `jsonschema` library, Rust's `jsonschema-rs`, Go's `gojsonschema`, and Java's `everit-json-schema` are all significant ecosystem components that this tool does not touch. Measuring only npm gives a skewed picture of the ecosystem that over-represents JavaScript adoption and makes the community appear smaller and less diverse than it actually is.
+With the addition of PyPI tracking for the `jsonschema` Python package, the tool now covers two major registries (npm and PyPI). However, Rust's `jsonschema-rs`, Go's `gojsonschema`, and Java's `everit-json-schema` are significant ecosystem components that remain untracked. Measuring only npm and PyPI gives a more balanced picture than npm alone, but still under-represents the ecosystem's true cross-language diversity.
 
 **These metrics do not compound into insight without a time series**
 
