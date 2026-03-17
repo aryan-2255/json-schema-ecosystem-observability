@@ -1,17 +1,18 @@
 # json-schema-observability
 
-A lightweight CLI tool that collects key metrics about the JSON Schema ecosystem and writes them to a structured JSON file. Built as a proof-of-concept for the GSoC "Ecosystem Observability" qualification task.
+A lightweight CLI tool that collects key metrics about the JSON Schema ecosystem from multiple registries and writes them to a structured JSON file. Built as a proof-of-concept for the GSoC "Ecosystem Observability" qualification task.
 
 ---
 
 ## Project Purpose
 
-This tool tracks two specific signals about the JSON Schema ecosystem:
+This tool tracks three specific signals about the JSON Schema ecosystem across two package registries:
 
 1. **npm weekly downloads for `ajv`** — the most widely used JSON Schema validator in the JavaScript ecosystem
 2. **Count of GitHub repositories tagged with the `json-schema` topic** — a measure of intentional community engagement
+3. **PyPI weekly downloads for `jsonschema`** — the primary JSON Schema validator in the Python ecosystem
 
-It fetches both from their respective public APIs, combines them into a single structured JSON snapshot, and optionally visualizes the result. The goal is to demonstrate a clean, modular, automatable approach to ecosystem observability — one that can be extended with additional metrics over time.
+It fetches all three from their respective public APIs in parallel, combines them into a single structured JSON snapshot, and visualizes the result on a live dashboard. The goal is to demonstrate a clean, modular, automatable approach to ecosystem observability — one that extends across registries and can grow with additional metrics over time.
 
 
 ---
@@ -24,6 +25,7 @@ json-schema-observability/
 ├── src/
 │   ├── npmMetric.ts       # Fetches weekly downloads for "ajv" from the npm API
 │   ├── githubMetric.ts    # Fetches repo count with topic "json-schema" from GitHub API
+│   ├── pypiMetric.ts      # Fetches weekly downloads for "jsonschema" from the PyPI Stats API
 │   └── index.ts           # Entry point — orchestrates collection, combines, writes output
 │
 ├── output/
@@ -74,8 +76,9 @@ Then open: [http://localhost:8080/visualization/chart.html](http://localhost:808
 |--------|----------|---------------|
 | npm Downloads API | `https://api.npmjs.org/downloads/point/last-week/ajv` | No |
 | GitHub Search API | `https://api.github.com/search/repositories?q=topic:json-schema` | No (rate-limited to ~10 req/min unauthenticated) |
+| PyPI Stats API | `https://pypistats.org/api/packages/jsonschema/recent` | No |
 
-Both are public, free-tier APIs. No API keys are required for basic usage.
+All three are public, free-tier APIs. No API keys are required for basic usage.
 
 **GitHub rate limits:** Unauthenticated requests to the GitHub Search API are limited to 10 requests per minute. If you hit a rate limit, set a `GITHUB_TOKEN` environment variable (a personal access token with no special scopes) to raise the ceiling to 30 requests per minute.
 
@@ -85,7 +88,7 @@ Both are public, free-tier APIs. No API keys are required for basic usage.
 
 ```json
 {
-  "timestamp": "2026-03-03T17:50:20.914Z",
+  "timestamp": "2026-03-18T00:00:00.000Z",
   "metrics": [
     {
       "name": "ajv_weekly_downloads",
@@ -98,6 +101,12 @@ Both are public, free-tier APIs. No API keys are required for basic usage.
       "value": 2377,
       "source": "github",
       "description": "Number of public GitHub repositories tagged with the json-schema topic"
+    },
+    {
+      "name": "pypi_jsonschema_weekly_downloads",
+      "value": 8500000,
+      "source": "pypi",
+      "description": "Weekly download count for the jsonschema Python package"
     }
   ]
 }
@@ -136,7 +145,7 @@ No other files need to change.
 
 ## Design Decisions
 
-- **`Promise.all` for concurrency** — Both API calls are independent, so they run in parallel rather than sequentially. This halves the wall-clock time.
+- **`Promise.all` for concurrency** — All three API calls are independent, so they run in parallel rather than sequentially. This minimizes wall-clock time and proves the modular pattern scales to multiple registries.
 - **Typed output shape** — The `MetricsOutput` interface in `index.ts` ensures the JSON structure is enforced at compile time and is easy to audit.
 - **No framework, no database** — The output is a plain JSON file. Easy to check into version control, diff over time, or feed into any downstream tool.
 - **Self-describing metric schema** — Each metric carries its own `source` and `description`. The JSON file is readable without the source code.

@@ -2,12 +2,16 @@ import fs from "fs";
 import path from "path";
 import { fetchNpmWeeklyDownloads } from "./npmMetric";
 import { fetchGitHubTopicRepoCount } from "./githubMetric";
+import { fetchPyPIWeeklyDownloads } from "./pypiMetric";
 
 // Metric 1: npm weekly downloads for the ajv JSON Schema validator
 const NPM_PACKAGE = "ajv";
 
 // Metric 2: count of GitHub repositories tagged with the json-schema topic
 const GITHUB_TOPIC = "json-schema";
+
+// Metric 3: PyPI weekly downloads for the jsonschema Python validator
+const PYPI_PACKAGE = "jsonschema";
 
 const OUTPUT_DIR = path.resolve(__dirname, "../output");
 const OUTPUT_FILE = path.join(OUTPUT_DIR, "metrics.json");
@@ -41,16 +45,20 @@ function writeMetrics(data: MetricsOutput): void {
 async function main(): Promise<void> {
     console.log("🔍 Fetching JSON Schema ecosystem metrics...\n");
 
-    // Both API calls are independent — run them in parallel
-    const [npmDownloads, githubRepos] = await Promise.all([
+    // All three API calls are independent — run them in parallel
+    const [npmDownloads, githubRepos, pypiDownloads] = await Promise.all([
         fetchNpmWeeklyDownloads(NPM_PACKAGE).then((count) => {
-            console.log(`  📦 ajv weekly downloads: ${count.toLocaleString()}`);
+            console.log(`  📦 ajv weekly downloads (npm): ${count.toLocaleString()}`);
             return count;
         }),
         fetchGitHubTopicRepoCount(GITHUB_TOPIC).then((count) => {
             console.log(
                 `  🐙 GitHub repos with topic "${GITHUB_TOPIC}": ${count.toLocaleString()}`
             );
+            return count;
+        }),
+        fetchPyPIWeeklyDownloads(PYPI_PACKAGE).then((count) => {
+            console.log(`  🐍 jsonschema weekly downloads (PyPI): ${count.toLocaleString()}`);
             return count;
         }),
     ]);
@@ -70,6 +78,13 @@ async function main(): Promise<void> {
                 source: "github",
                 description:
                     "Number of public GitHub repositories tagged with the json-schema topic",
+            },
+            {
+                name: "pypi_jsonschema_weekly_downloads",
+                value: pypiDownloads,
+                source: "pypi",
+                description:
+                    "Weekly download count for the jsonschema Python package",
             },
         ],
     };

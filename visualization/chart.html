@@ -495,7 +495,7 @@
     <header class="header">
       <div class="tag"><span class="dot"></span> Live Ecosystem Data</div>
       <h1>JSON Schema<br>Ecosystem Observatory</h1>
-      <p>Real-time metrics tracking the health and reach of the JSON Schema ecosystem across npm and GitHub.</p>
+      <p>Real-time metrics tracking the health and reach of the JSON Schema ecosystem across npm, GitHub, and PyPI.</p>
     </header>
 
     <!-- Metric Cards -->
@@ -519,13 +519,24 @@
       </div>
     </div>
 
+    <!-- PyPI chart in its own row -->
+    <div class="charts-grid" style="grid-template-columns: 1fr; margin-bottom: 40px;">
+      <div class="chart-panel" style="animation-delay: 0.8s;">
+        <div class="panel-header">
+          <span class="panel-title">🐍 Cross-Registry Comparison (npm vs PyPI)</span>
+          <span class="panel-value" id="pypiChartValue">—</span>
+        </div>
+        <canvas id="pypiChart"></canvas>
+      </div>
+    </div>
+
     <!-- Insight Banner -->
     <div class="insight-banner" id="insightBanner"></div>
 
     <!-- Footer -->
     <div class="footer">
       <div class="timestamp" id="footerTimestamp">—</div>
-      <div class="credits">json-schema-observability · Data from <a href="https://www.npmjs.com" target="_blank">npm</a> & <a href="https://github.com" target="_blank">GitHub</a> APIs</div>
+      <div class="credits">json-schema-observability · Data from <a href="https://www.npmjs.com" target="_blank">npm</a>, <a href="https://github.com" target="_blank">GitHub</a> & <a href="https://pypi.org" target="_blank">PyPI</a> APIs</div>
     </div>
   </div>
 
@@ -605,10 +616,10 @@
       const byName = Object.fromEntries(data.metrics.map(m => [m.name, m]));
       const ajv    = byName['ajv_weekly_downloads'];
       const github = byName['github_json_schema_topic_repos'];
+      const pypi   = byName['pypi_jsonschema_weekly_downloads'];
 
       // ── Render stat cards ──
       const ratio = Math.round(ajv.value / github.value).toLocaleString();
-      const downloadsPerDay = Math.round(ajv.value / 7);
 
       document.getElementById('metricsRow').innerHTML = `
         <div class="metric-card blue">
@@ -634,12 +645,12 @@
         <div class="metric-card purple">
           <div class="glow"></div>
           <div class="icon-row">
-            <div class="icon">⚡</div>
-            <span class="source-badge">derived</span>
+            <div class="icon">🐍</div>
+            <span class="source-badge">pypi stats</span>
           </div>
-          <div class="value" id="val-daily">0</div>
-          <div class="label">Estimated daily downloads</div>
-          <div class="sparkline-area">${makeSpark('#a78bfa', [25, 27, 29, 28, 31, 30, 30, 31, 32, 31])}</div>
+          <div class="value" id="val-pypi">0</div>
+          <div class="label">Weekly downloads for <strong>jsonschema</strong> (Python)</div>
+          <div class="sparkline-area">${makeSpark('#a78bfa', [7.5, 7.8, 8.0, 7.9, 8.2, 8.1, 8.3, 8.4, 8.2, 8.5])}</div>
         </div>
       `;
 
@@ -647,7 +658,7 @@
       setTimeout(() => {
         animateValue(document.getElementById('val-npm'), ajv.value, 2000, formatMillions);
         animateValue(document.getElementById('val-gh'), github.value, 2000, formatCount);
-        animateValue(document.getElementById('val-daily'), downloadsPerDay, 2000, formatMillions);
+        animateValue(document.getElementById('val-pypi'), pypi ? pypi.value : 0, 2000, formatMillions);
       }, 300);
 
       // ── NPM chart (horizontal bar) ──
@@ -778,15 +789,73 @@
         }],
       });
 
+      // ── PyPI comparison chart ──
+      if (pypi) {
+        document.getElementById('pypiChartValue').textContent = formatMillions(pypi.value) + '/week';
+        const pypiCtx = document.getElementById('pypiChart').getContext('2d');
+        const pypiGradientNpm = pypiCtx.createLinearGradient(0, 0, pypiCtx.canvas.width, 0);
+        pypiGradientNpm.addColorStop(0, 'rgba(108, 140, 255, 0.05)');
+        pypiGradientNpm.addColorStop(1, 'rgba(108, 140, 255, 0.35)');
+        const pypiGradientPypi = pypiCtx.createLinearGradient(0, 0, pypiCtx.canvas.width, 0);
+        pypiGradientPypi.addColorStop(0, 'rgba(167, 139, 250, 0.05)');
+        pypiGradientPypi.addColorStop(1, 'rgba(167, 139, 250, 0.35)');
+
+        new Chart(pypiCtx, {
+          type: 'bar',
+          data: {
+            labels: ['ajv (npm / JavaScript)', 'jsonschema (PyPI / Python)'],
+            datasets: [{
+              data: [ajv.value, pypi.value],
+              backgroundColor: [pypiGradientNpm, pypiGradientPypi],
+              borderColor: ['rgba(108, 140, 255, 0.8)', 'rgba(167, 139, 250, 0.8)'],
+              borderWidth: 1.5,
+              borderRadius: 8,
+              borderSkipped: false,
+            }],
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: 'rgba(14, 18, 32, 0.95)',
+                borderColor: 'rgba(167, 139, 250, 0.2)',
+                borderWidth: 1,
+                padding: 12,
+                cornerRadius: 10,
+                callbacks: {
+                  label: ctx => '  ' + Number(ctx.raw).toLocaleString() + ' downloads/week',
+                },
+              },
+            },
+            scales: {
+              x: {
+                grid: { color: 'rgba(108, 140, 255, 0.04)', drawBorder: false },
+                ticks: { font: { size: 11 }, callback: v => formatMillions(v) },
+              },
+              y: {
+                grid: { display: false },
+                ticks: { font: { size: 12, weight: '500' } },
+              },
+            },
+            animation: { duration: 1800, easing: 'easeOutQuart', delay: (ctx) => ctx.dataIndex * 200 },
+          },
+        });
+      }
+
       // ── Insight banner ──
+      const pypiLabel = pypi ? formatMillions(pypi.value) : 'N/A';
       document.getElementById('insightBanner').innerHTML = `
         <div class="insight-icon">💡</div>
         <div class="insight-content">
-          <h3>The Adoption Gap</h3>
+          <h3>The Adoption Gap — Across Registries</h3>
           <p>For every GitHub repository explicitly tagged with <em>json-schema</em>, there are roughly
           <span class="ratio-badge">${ratio}:1</span> weekly npm downloads of <strong>ajv</strong> alone.
-          JSON Schema is deeply embedded in JavaScript infrastructure — most users don't even know they depend on it.
-          This gap between invisible adoption and visible community engagement is the key signal for ecosystem growth strategy.</p>
+          Meanwhile, Python's <strong>jsonschema</strong> adds another <span class="ratio-badge">${pypiLabel}</span> downloads/week.
+          JSON Schema is deeply embedded across multiple language ecosystems — most users don't even know they depend on it.
+          This cross-registry gap between invisible adoption and visible community engagement is the key signal for ecosystem growth strategy.</p>
         </div>
       `;
 
