@@ -8,11 +8,11 @@ A lightweight CLI tool that collects key metrics about the JSON Schema ecosystem
 
 This tool tracks three specific signals about the JSON Schema ecosystem across two package registries:
 
-1. **npm weekly downloads for `ajv`** — the most widely used JSON Schema validator in the JavaScript ecosystem
-2. **Count of GitHub repositories tagged with the `json-schema` topic** — a measure of intentional community engagement
-3. **PyPI weekly downloads for `jsonschema`** — the primary JSON Schema validator in the Python ecosystem
+1. **npm weekly downloads for `ajv`**  the most widely used JSON Schema validator in the JavaScript ecosystem
+2. **Count of GitHub repositories tagged with the `json-schema` topic** a measure of intentional community engagement
+3. **PyPI weekly downloads for `jsonschema`**  the primary JSON Schema validator in the Python ecosystem
 
-It fetches all three from their respective public APIs in parallel, combines them into a single structured JSON snapshot, and visualizes the result on a live dashboard. The goal is to demonstrate a clean, modular, automatable approach to ecosystem observability — one that extends across registries and can grow with additional metrics over time.
+It fetches all three from their respective public APIs in parallel, combines them into a single structured JSON snapshot, and visualizes the result on a live dashboard. The goal is to demonstrate a clean, modular, automatable approach to ecosystem observability  one that extends across registries and can grow with additional metrics over time.
 
 
 ---
