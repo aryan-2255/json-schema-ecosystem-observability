@@ -512,6 +512,21 @@
       .metric-card .value { font-size: 2.2rem; }
       .insight-banner { flex-direction: column; }
     }
+    /* ── Export overrides ── */
+    body.exporting *,
+    body.exporting *::before,
+    body.exporting *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+    body.exporting .header h1 {
+      background: none !important;
+      -webkit-text-fill-color: #e8ecf4 !important;
+      color: #e8ecf4 !important;
+    }
+    body.exporting .export-btn {
+      opacity: 0 !important;
+    }
   </style>
 </head>
 <body>
@@ -914,21 +929,28 @@
       btn.textContent = 'Exporting...';
       btn.disabled = true;
 
-      html2canvas(document.getElementById('app'), {
-        backgroundColor: '#0a0e1a',
-        scale: 2,
-        useCORS: true,
-      }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'json-schema-dashboard.png';
-        link.href = canvas.toDataURL();
-        link.click();
-        btn.innerHTML = 'Export as PNG';
-        btn.disabled = false;
-      }).catch(() => {
-        btn.innerHTML = 'Export as PNG';
-        btn.disabled = false;
-      });
+      document.body.classList.add('exporting');
+
+      // Small delay to allow CSS changes to take effect
+      setTimeout(() => {
+        html2canvas(document.getElementById('app'), {
+          backgroundColor: '#0a0e1a',
+          scale: 2,
+          useCORS: true,
+        }).then(canvas => {
+          document.body.classList.remove('exporting');
+          const link = document.createElement('a');
+          link.download = 'json-schema-dashboard.png';
+          link.href = canvas.toDataURL();
+          link.click();
+          btn.innerHTML = 'Export as PNG';
+          btn.disabled = false;
+        }).catch(() => {
+          document.body.classList.remove('exporting');
+          btn.innerHTML = 'Export as PNG';
+          btn.disabled = false;
+        });
+      }, 50);
     }
   </script>
 </body>
