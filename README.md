@@ -39,6 +39,10 @@ json-schema-observability/
 ├── visualization/
 │   └── chart.html         # Chart.js dashboard that reads output/metrics.json
 │
+├── .github/
+│   └── workflows/
+│       └── update-metrics.yml  # Weekly auto-update via GitHub Actions
+│
 ├── README.md
 ├── analysis.md            # Part 1 of the qualification task
 ├── evaluation.md          # Part 2 of the qualification task
@@ -82,6 +86,18 @@ npm test
 ```
 
 Runs integration tests that verify each metric fetcher returns valid data from its live API and checks that `output/metrics.json` has the correct structure. No extra dependencies needed.
+
+---
+
+## Automation
+
+Metrics are automatically refreshed every Monday via GitHub Actions. The workflow:
+
+1. Runs `npm start` to fetch live data from npm, GitHub, and PyPI
+2. Commits the updated `output/metrics.json` to the repo
+3. Vercel auto-deploys the new data to the live dashboard
+
+You can also trigger a manual update from the **Actions** tab in GitHub.
 
 ---
 

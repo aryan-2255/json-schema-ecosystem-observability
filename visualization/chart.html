@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -234,28 +235,23 @@
     }
 
     .metric-card .icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
+      font-size: 1.4rem;
     }
 
-    .metric-card.blue .icon { background: rgba(108, 140, 255, 0.12); }
-    .metric-card.green .icon { background: rgba(56, 217, 154, 0.12); }
-    .metric-card.purple .icon { background: rgba(167, 139, 250, 0.12); }
+    .metric-card.blue .icon { color: #6c8cff; }
+    .metric-card.green .icon { color: #38d99a; }
+    .metric-card.purple .icon { color: #a78bfa; }
 
     .metric-card .source-badge {
-      font-size: 0.65rem;
+      font-size: 0.72rem;
       font-weight: 600;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      padding: 4px 10px;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text-muted);
+      padding: 0;
+      color: rgba(255, 255, 255, 0.55);
       font-family: var(--font-mono);
     }
 
@@ -401,27 +397,37 @@
     /* ── Footer ── */
     .footer {
       text-align: center;
-      padding-top: 20px;
-      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      padding-top: 28px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
       animation: fadeInUp 0.8s ease-out 0.95s backwards;
     }
 
     .footer .timestamp {
-      font-size: 0.72rem;
+      font-size: 0.95rem;
       font-family: var(--font-mono);
       color: var(--text-muted);
-      margin-bottom: 8px;
+      margin-bottom: 14px;
     }
 
     .footer .credits {
-      font-size: 0.7rem;
-      color: rgba(255, 255, 255, 0.12);
-      letter-spacing: 0.04em;
+      font-size: 0.92rem;
+      color: rgba(255, 255, 255, 0.4);
+      letter-spacing: 0.03em;
+      line-height: 1.6;
     }
 
     .footer .credits a {
-      color: rgba(108, 140, 255, 0.4);
+      color: rgba(108, 140, 255, 0.8);
       text-decoration: none;
+      border-bottom: 1px dashed rgba(108, 140, 255, 0.4);
+      padding-bottom: 1px;
+      transition: all 0.2s;
+    }
+
+    .footer .credits a:hover {
+      color: #6c8cff;
+      border-bottom-color: #6c8cff;
+      border-bottom-style: solid;
     }
 
     /* ── Animations ── */
@@ -472,6 +478,30 @@
       color: var(--accent-blue);
     }
 
+    .export-btn {
+      position: absolute;
+      top: 50px;
+      left: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: rgba(10, 14, 26, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(108, 140, 255, 0.25);
+      border-radius: 10px;
+      color: var(--accent-blue);
+      font-family: var(--font-main);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .export-btn:hover {
+      background: rgba(108, 140, 255, 0.15);
+      border-color: rgba(108, 140, 255, 0.5);
+    }
+
     /* ── Responsive ── */
     @media (max-width: 640px) {
       .app { padding: 28px 16px 48px; }
@@ -491,6 +521,7 @@
   <div class="grid-overlay"></div>
 
   <div class="app" id="app">
+    <button class="export-btn" onclick="exportPNG()">📸 Export as PNG</button>
     <!-- Header -->
     <header class="header">
       <div class="tag"><span class="dot"></span> Live Ecosystem Data</div>
@@ -536,7 +567,7 @@
     <!-- Footer -->
     <div class="footer">
       <div class="timestamp" id="footerTimestamp">-</div>
-      <div class="credits">json schema observability · Data from <a href="https://www.npmjs.com" target="_blank">npm</a>, <a href="https://github.com" target="_blank">GitHub</a> & <a href="https://pypi.org" target="_blank">PyPI</a> APIs</div>
+      <div class="credits"><a href="https://github.com/aryan-2255/json-schema-ecosystem-observability" target="_blank">View Source on GitHub</a> · Data from <a href="https://www.npmjs.com" target="_blank">npm</a>, <a href="https://api.github.com" target="_blank">GitHub API</a> & <a href="https://pypi.org" target="_blank">PyPI</a></div>
     </div>
   </div>
 
@@ -625,32 +656,29 @@
         <div class="metric-card blue">
           <div class="glow"></div>
           <div class="icon-row">
-            
+            <div class="icon">📦</div>
             <span class="source-badge">npm registry</span>
           </div>
           <div class="value" id="val-npm">0</div>
           <div class="label">Weekly downloads for <strong>ajv</strong> validator</div>
-          
         </div>
         <div class="metric-card green">
           <div class="glow"></div>
           <div class="icon-row">
-          
+            <div class="icon">🐙</div>
             <span class="source-badge">github api</span>
           </div>
           <div class="value" id="val-gh">0</div>
           <div class="label">Repositories tagged <strong>json-schema</strong></div>
-          
         </div>
         <div class="metric-card purple">
           <div class="glow"></div>
           <div class="icon-row">
-            
+            <div class="icon">🐍</div>
             <span class="source-badge">pypi stats</span>
           </div>
           <div class="value" id="val-pypi">0</div>
           <div class="label">Weekly downloads for <strong>jsonschema</strong> (Python)</div>
-          
         </div>
       `;
 
@@ -867,6 +895,28 @@
     }
 
     init();
+
+    function exportPNG() {
+      const btn = document.querySelector('.export-btn');
+      btn.textContent = 'Exporting...';
+      btn.disabled = true;
+
+      html2canvas(document.getElementById('app'), {
+        backgroundColor: '#0a0e1a',
+        scale: 2,
+        useCORS: true,
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'json-schema-dashboard.png';
+        link.href = canvas.toDataURL();
+        link.click();
+        btn.innerHTML = '\ud83d\udcf8 Export as PNG';
+        btn.disabled = false;
+      }).catch(() => {
+        btn.innerHTML = '\ud83d\udcf8 Export as PNG';
+        btn.disabled = false;
+      });
+    }
   </script>
 </body>
 </html>
