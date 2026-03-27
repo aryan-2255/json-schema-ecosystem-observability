@@ -497,9 +497,13 @@
       cursor: pointer;
       transition: all 0.2s ease;
     }
-    .export-btn:hover {
+    .export-btn:hover:not(:disabled) {
       background: rgba(108, 140, 255, 0.15);
       border-color: rgba(108, 140, 255, 0.5);
+    }
+    .export-btn:disabled {
+      opacity: 0.6;
+      cursor: wait;
     }
 
     /* ── Responsive ── */
@@ -521,7 +525,7 @@
   <div class="grid-overlay"></div>
 
   <div class="app" id="app">
-    <button class="export-btn" onclick="exportPNG()">Export as PNG</button>
+    <button class="export-btn" onclick="exportPNG()" disabled>Loading...</button>
     <!-- Header -->
     <header class="header">
       <div class="tag"><span class="dot"></span> Live Ecosystem Data</div>
@@ -892,6 +896,15 @@
       document.getElementById('footerTimestamp').textContent =
         'Snapshot taken ' + ts.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) +
         ' at ' + ts.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+
+      // ── Enable export button after animations finish ──
+      setTimeout(() => {
+        const btn = document.querySelector('.export-btn');
+        if (btn) {
+          btn.innerHTML = 'Export as PNG';
+          btn.disabled = false;
+        }
+      }, 2200); // Wait for the 2000ms animation to complete
     }
 
     init();
