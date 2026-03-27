@@ -2,6 +2,8 @@
 
 A lightweight CLI tool that collects key metrics about the JSON Schema ecosystem from multiple registries and writes them to a structured JSON file. Built as a proof-of-concept for the GSoC "Ecosystem Observability" qualification task.
 
+**Live Dashboard:** [https://json-schema-ecosystem-observability-one.vercel.app/](https://json-schema-ecosystem-observability-one.vercel.app/)
+
 ---
 
 ## Project Purpose
