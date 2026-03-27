@@ -135,4 +135,4 @@ A long-term improvement would be to introduce a collector abstraction layer wher
 
 This would separate data acquisition, enrichment, and output formatting into distinct layers, making the system easier to extend without restructuring the core pipeline. New ecosystem signals could be added by implementing a new collector rather than modifying the main loop.
 
-Such a design would allow the project to evolve from a single-purpose script into a scalable observability framework capable of tracking multiple dimensions of the JSON Schema ecosystem over time.
+Such a design would allow the project to evolve from a single purpose script into a scalable observability framework capable of tracking multiple dimensions of the JSON Schema ecosystem over time.
