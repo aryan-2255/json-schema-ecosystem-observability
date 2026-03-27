@@ -7,8 +7,7 @@
     "build": "tsc",
     "start": "ts-node src/index.ts",
     "dev": "ts-node src/index.ts",
-    "test": "ts-node tests/metrics.test.ts",
-    "prepare-deploy": "node scripts/prepare-deploy.js"
+    "test": "ts-node tests/metrics.test.ts"
   },
   "keywords": [
     "json-schema",

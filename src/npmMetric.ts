@@ -2,7 +2,7 @@ import axios from "axios";
 
 const NPM_DOWNLOADS_API = "https://api.npmjs.org/downloads/point/last-week";
 
-// 10 seconds — enough for a public API under normal conditions
+// 10 seconds - enough for a public API under normal conditions
 const REQUEST_TIMEOUT_MS = 10_000;
 
 /**

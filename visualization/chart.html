@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JSON Schema — Ecosystem Observatory</title>
+  <title>JSON Schema Ecosystem Observatory</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
@@ -501,19 +501,19 @@
     <!-- Metric Cards -->
     <div class="metrics-row" id="metricsRow"></div>
 
-    <!-- Chart Panels — separate chart for each metric -->
+    <!-- Chart Panels separate chart for each metric -->
     <div class="charts-grid" id="chartsGrid">
       <div class="chart-panel">
         <div class="panel-header">
-          <span class="panel-title">📦 npm Downloads Distribution</span>
-          <span class="panel-value" id="npmChartValue">—</span>
+          <span class="panel-title">npm Downloads Distribution</span>
+          <span class="panel-value" id="npmChartValue"></span>
         </div>
         <canvas id="npmChart"></canvas>
       </div>
       <div class="chart-panel">
         <div class="panel-header">
-          <span class="panel-title">🐙 GitHub Ecosystem Reach</span>
-          <span class="panel-value" id="githubChartValue">—</span>
+          <span class="panel-title">GitHub Ecosystem Reach</span>
+          <span class="panel-value" id="githubChartValue"></span>
         </div>
         <canvas id="githubChart"></canvas>
       </div>
@@ -523,8 +523,8 @@
     <div class="charts-grid" style="grid-template-columns: 1fr; margin-bottom: 40px;">
       <div class="chart-panel" style="animation-delay: 0.8s;">
         <div class="panel-header">
-          <span class="panel-title">🐍 Cross-Registry Comparison (npm vs PyPI)</span>
-          <span class="panel-value" id="pypiChartValue">—</span>
+          <span class="panel-title">Cross-Registry Comparison (npm vs PyPI)</span>
+          <span class="panel-value" id="pypiChartValue"></span>
         </div>
         <canvas id="pypiChart"></canvas>
       </div>
@@ -535,8 +535,8 @@
 
     <!-- Footer -->
     <div class="footer">
-      <div class="timestamp" id="footerTimestamp">—</div>
-      <div class="credits">json-schema-observability · Data from <a href="https://www.npmjs.com" target="_blank">npm</a>, <a href="https://github.com" target="_blank">GitHub</a> & <a href="https://pypi.org" target="_blank">PyPI</a> APIs</div>
+      <div class="timestamp" id="footerTimestamp">-</div>
+      <div class="credits">json schema observability · Data from <a href="https://www.npmjs.com" target="_blank">npm</a>, <a href="https://github.com" target="_blank">GitHub</a> & <a href="https://pypi.org" target="_blank">PyPI</a> APIs</div>
     </div>
   </div>
 
@@ -625,32 +625,32 @@
         <div class="metric-card blue">
           <div class="glow"></div>
           <div class="icon-row">
-            <div class="icon">📦</div>
+            
             <span class="source-badge">npm registry</span>
           </div>
           <div class="value" id="val-npm">0</div>
           <div class="label">Weekly downloads for <strong>ajv</strong> validator</div>
-          <div class="sparkline-area">${makeSpark('#6c8cff', [180, 195, 210, 205, 220, 215, 212, 218, 225, 215])}</div>
+          
         </div>
         <div class="metric-card green">
           <div class="glow"></div>
           <div class="icon-row">
-            <div class="icon">🐙</div>
+          
             <span class="source-badge">github api</span>
           </div>
           <div class="value" id="val-gh">0</div>
           <div class="label">Repositories tagged <strong>json-schema</strong></div>
-          <div class="sparkline-area">${makeSpark('#38d99a', [2100, 2150, 2200, 2250, 2280, 2310, 2350, 2380, 2400, 2427])}</div>
+          
         </div>
         <div class="metric-card purple">
           <div class="glow"></div>
           <div class="icon-row">
-            <div class="icon">🐍</div>
+            
             <span class="source-badge">pypi stats</span>
           </div>
           <div class="value" id="val-pypi">0</div>
           <div class="label">Weekly downloads for <strong>jsonschema</strong> (Python)</div>
-          <div class="sparkline-area">${makeSpark('#a78bfa', [7.5, 7.8, 8.0, 7.9, 8.2, 8.1, 8.3, 8.4, 8.2, 8.5])}</div>
+          
         </div>
       `;
 
@@ -848,14 +848,14 @@
       // ── Insight banner ──
       const pypiLabel = pypi ? formatMillions(pypi.value) : 'N/A';
       document.getElementById('insightBanner').innerHTML = `
-        <div class="insight-icon">💡</div>
+        
         <div class="insight-content">
-          <h3>The Adoption Gap — Across Registries</h3>
+          <h3>The Adoption Gap - Across Registries</h3>
           <p>For every GitHub repository explicitly tagged with <em>json-schema</em>, there are roughly
           <span class="ratio-badge">${ratio}:1</span> weekly npm downloads of <strong>ajv</strong> alone.
           Meanwhile, Python's <strong>jsonschema</strong> adds another <span class="ratio-badge">${pypiLabel}</span> downloads/week.
-          JSON Schema is deeply embedded across multiple language ecosystems — most users don't even know they depend on it.
-          This cross-registry gap between invisible adoption and visible community engagement is the key signal for ecosystem growth strategy.</p>
+          JSON Schema is deeply embedded across multiple language ecosystems - most users don't even know they depend on it.
+          This cross registry gap between invisible adoption and visible community engagement is the key signal for ecosystem growth strategy.</p>
         </div>
       `;
 

@@ -2,7 +2,7 @@ import axios from "axios";
 
 const GITHUB_SEARCH_API = "https://api.github.com/search/repositories";
 
-// 10 seconds — enough for a public API under normal conditions
+// 10 seconds - enough for a public API under normal conditions
 const REQUEST_TIMEOUT_MS = 10_000;
 
 // Warn when fewer than this many requests remain in the current rate-limit window

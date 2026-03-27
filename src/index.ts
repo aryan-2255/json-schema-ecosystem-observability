@@ -45,7 +45,7 @@ function writeMetrics(data: MetricsOutput): void {
 async function main(): Promise<void> {
     console.log("🔍 Fetching JSON Schema ecosystem metrics...\n");
 
-    // All three API calls are independent — run them in parallel
+    // All three API calls are independent - run them in parallel
     const [npmDownloads, githubRepos, pypiDownloads] = await Promise.all([
         fetchNpmWeeklyDownloads(NPM_PACKAGE).then((count) => {
             console.log(`  📦 ajv weekly downloads (npm): ${count.toLocaleString()}`);

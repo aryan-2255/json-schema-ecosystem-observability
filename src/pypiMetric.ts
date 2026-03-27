@@ -2,10 +2,10 @@ import axios from "axios";
 
 const PYPISTATS_API = "https://pypistats.org/api/packages";
 
-// 15 seconds — PyPI Stats API can be slow under load
+// 15 seconds - PyPI Stats API can be slow under load
 const REQUEST_TIMEOUT_MS = 15_000;
 
-// Retry configuration — PyPI Stats API imposes aggressive rate limits
+// Retry configuration - PyPI Stats API imposes aggressive rate limits
 const MAX_RETRIES = 3;
 const INITIAL_BACKOFF_MS = 2_000;
 

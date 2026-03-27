@@ -8,11 +8,11 @@ A lightweight CLI tool that collects key metrics about the JSON Schema ecosystem
 
 This tool tracks three specific signals about the JSON Schema ecosystem across two package registries:
 
-1. **npm weekly downloads for `ajv`**  the most widely used JSON Schema validator in the JavaScript ecosystem
-2. **Count of GitHub repositories tagged with the `json-schema` topic** a measure of intentional community engagement
-3. **PyPI weekly downloads for `jsonschema`**  the primary JSON Schema validator in the Python ecosystem
+1. **npm weekly downloads for `ajv`** - the most widely used JSON Schema validator in the JavaScript ecosystem
+2. **Count of GitHub repositories tagged with the `json-schema` topic** - a measure of intentional community engagement
+3. **PyPI weekly downloads for `jsonschema`** - the primary JSON Schema validator in the Python ecosystem
 
-It fetches all three from their respective public APIs in parallel, combines them into a single structured JSON snapshot, and visualizes the result on a live dashboard. The goal is to demonstrate a clean, modular, automatable approach to ecosystem observability  one that extends across registries and can grow with additional metrics over time.
+It fetches all three from their respective public APIs in parallel, combines them into a single structured JSON snapshot, and visualizes the result on a live dashboard. The goal is to demonstrate a clean, modular, automatable approach to ecosystem observability - one that extends across registries and can grow with additional metrics over time.
 
 
 ---
@@ -26,7 +26,10 @@ json-schema-observability/
 │   ├── npmMetric.ts       # Fetches weekly downloads for "ajv" from the npm API
 │   ├── githubMetric.ts    # Fetches repo count with topic "json-schema" from GitHub API
 │   ├── pypiMetric.ts      # Fetches weekly downloads for "jsonschema" from the PyPI Stats API
-│   └── index.ts           # Entry point — orchestrates collection, combines, writes output
+│   └── index.ts           # Entry point - orchestrates collection, combines, writes output
+│
+├── tests/
+│   └── metrics.test.ts    # Integration tests for all three metric fetchers
 │
 ├── output/
 │   └── metrics.json       # Generated output file (created/overwritten on every run)
@@ -35,7 +38,7 @@ json-schema-observability/
 │   └── chart.html         # Chart.js dashboard that reads output/metrics.json
 │
 ├── README.md
-├── analysis.md            #  Part 1 of the qualification task
+├── analysis.md            # Part 1 of the qualification task
 ├── evaluation.md          # Part 2 of the qualification task
 ├── tsconfig.json
 └── package.json
@@ -66,7 +69,17 @@ python3 -m http.server 8080
 
 Then open: [http://localhost:8080/visualization/chart.html](http://localhost:8080/visualization/chart.html)
 
-> The chart uses `fetch()` to load `output/metrics.json`. Opening `chart.html` directly from the filesystem (`file://`) will be blocked by browser CORS policy — a local server sidesteps this.
+> The chart uses `fetch()` to load `output/metrics.json`. Opening `chart.html` directly from the filesystem (`file://`) will be blocked by browser CORS policy - a local server sidesteps this.
+
+---
+
+## Testing
+
+```bash
+npm test
+```
+
+Runs integration tests that verify each metric fetcher returns valid data from its live API and checks that `output/metrics.json` has the correct structure. No extra dependencies needed.
 
 ---
 
@@ -116,28 +129,28 @@ All three are public, free-tier APIs. No API keys are required for basic usage.
 
 ## How to Extend With More Metrics
 
-The architecture is intentionally modular — each metric lives in its own file and exports a single async function.
+The architecture is intentionally modular - each metric lives in its own file and exports a single async function.
 
-**To add a new metric (e.g., PyPI downloads for `jsonschema`):**
+**To add a new metric (e.g., Rubygems downloads for `json-schemer`):**
 
-1. Create `src/pypiMetric.ts`:
+1. Create `src/rubygemsMetric.ts`:
    ```typescript
    import axios from "axios";
 
-   export async function fetchPypiWeeklyDownloads(pkg: string): Promise<number> {
-     const res = await axios.get(`https://pypistats.org/api/packages/${pkg}/recent`);
-     return res.data.data.last_week;
+   export async function fetchRubygemsDownloads(gem: string): Promise<number> {
+     const res = await axios.get(`https://rubygems.org/api/v1/gems/${gem}.json`);
+     return res.data.downloads;
    }
    ```
 
 2. Import and call it in `src/index.ts` alongside the existing fetches:
    ```typescript
-   import { fetchPypiWeeklyDownloads } from "./pypiMetric";
+   import { fetchRubygemsDownloads } from "./rubygemsMetric";
 
-   const pypiDownloads = await fetchPypiWeeklyDownloads("jsonschema");
+   const rubyDownloads = await fetchRubygemsDownloads("json-schemer");
    ```
 
-3. Add the new field to the `MetricsOutput` interface and the output object.
+3. Add the new entry to the `metrics` array in the output object.
 
 No other files need to change.
 
@@ -145,25 +158,24 @@ No other files need to change.
 
 ## Design Decisions
 
-- **`Promise.all` for concurrency** — All three API calls are independent, so they run in parallel rather than sequentially. This minimizes wall-clock time and proves the modular pattern scales to multiple registries.
-- **Typed output shape** — The `MetricsOutput` interface in `index.ts` ensures the JSON structure is enforced at compile time and is easy to audit.
-- **No framework, no database** — The output is a plain JSON file. Easy to check into version control, diff over time, or feed into any downstream tool.
-- **Self-describing metric schema** — Each metric carries its own `source` and `description`. The JSON file is readable without the source code.
+- **`Promise.all` for concurrency** - All three API calls are independent, so they run in parallel rather than sequentially. This minimizes wall-clock time and proves the modular pattern scales to multiple registries.
+- **Typed output shape** - The `MetricsOutput` interface in `index.ts` ensures the JSON structure is enforced at compile time and is easy to audit.
+- **No framework, no database** - The output is a plain JSON file. Easy to check into version control, diff over time, or feed into any downstream tool.
+- **Self-describing metric schema** - Each metric carries its own `source` and `description`. The JSON file is readable without the source code.
 
 ---
 
 ## Future Extensions
 
-This proof-of-concept deliberately tracks two signals. A production version of this tool would want to grow along the following axes:
+This proof-of-concept tracks three signals across two package registries and GitHub. A production version would grow along the following axes:
 
 **More data sources**
-- PyPI weekly downloads for the `jsonschema` Python library
 - Rubygems downloads for `json-schemer` (Ruby ecosystem)
-- npm downloads for other validators: `ajv`, `zod`, `typebox`, `@sinclair/typebox`
+- npm downloads for other validators: `zod`, `typebox`, `@sinclair/typebox`
 - GitHub stars and open issue counts for key ecosystem repos
 
 **Trend tracking instead of snapshots**
-- Switch `output/metrics.json` to an append-only `.jsonl` file — one JSON line per weekly run
+- Switch `output/metrics.json` to an append-only `.jsonl` file - one JSON line per weekly run
 - Compute week-over-week delta (e.g., `+1.2%` downloads, `+14` new repos) and include it in the output
 - A time-series chart showing growth rates is far more informative than comparing absolute values
 
@@ -176,4 +188,4 @@ This proof-of-concept deliberately tracks two signals. A production version of t
 - GitHub Actions cron job (see `analysis.md`) to run every Monday and commit the result
 - A GitHub Pages deployment so the chart is publicly accessible at a stable URL without running a local server
 
-Each of these extensions follows the same pattern as the current two metrics: add a file in `src/`, export one async function, drop it into the `Promise.all` in `index.ts`. No restructuring needed.
+Each of these extensions follows the same pattern as the current three metrics: add a file in `src/`, export one async function, drop it into the `Promise.all` in `index.ts`. No restructuring needed.
