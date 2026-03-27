@@ -206,4 +206,4 @@ This proof-of-concept tracks three signals across two package registries and Git
 - GitHub Actions cron job (see `analysis.md`) to run every Monday and commit the result
 - A GitHub Pages deployment so the chart is publicly accessible at a stable URL without running a local server
 
-Each of these extensions follows the same pattern as the current three metrics: add a file in `src/`, export one async function, drop it into the `Promise.all` in `index.ts`. No restructuring needed.
+Each of these extensions follows the same pattern as the current three metrics: add a file in `src/`, export one async function, drop it into the `Promise.all` in `index.ts`. No restructuring needed
