@@ -1,21 +1,21 @@
 {
-  "timestamp": "2026-04-27T11:00:04.439Z",
+  "timestamp": "2026-05-04T11:03:14.506Z",
   "metrics": [
     {
       "name": "ajv_weekly_downloads",
-      "value": 278776183,
+      "value": 290670363,
       "source": "npm",
       "description": "Weekly download count for the ajv JSON Schema validator"
     },
     {
       "name": "github_json_schema_topic_repos",
-      "value": 2628,
+      "value": 2664,
       "source": "github",
       "description": "Number of public GitHub repositories tagged with the json-schema topic"
     },
     {
       "name": "pypi_jsonschema_weekly_downloads",
-      "value": 126375091,
+      "value": 109546371,
       "source": "pypi",
       "description": "Weekly download count for the jsonschema Python package"
     }
